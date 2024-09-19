@@ -1,3 +1,6 @@
+// added Aseem 03 Nov 2023
+#ifdef HAVE_TIRPC
+
 #ifndef _IO_TIPSY_H_
 #define _IO_TIPSY_H_
 #define TIPSY_MAXDIM 3
@@ -84,3 +87,4 @@ int tipsy_xdr_star(XDR *pxdrs,struct tipsy_star_particle *ph);
 
 #endif /* _IO_TIPSY_H */
 
+#endif //HAVE_TIRPC

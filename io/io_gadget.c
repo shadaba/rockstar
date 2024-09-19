@@ -114,10 +114,13 @@ void gadget2_extract_header_info(struct gadget_header *header)
 #undef SWAP8
   }
 
+  /* below commented out by Aseem 06 Nov 2023
+  /*
   if (fabs(header->omega_0 + header->omega_lambda - 1.0) > 1e-5) {
     fprintf(stderr, "[Error] Halo Finder Not Currently Configured to Run on Cosmologies with Curvature. (Omega_Matter = %f, Omega_Lambda = %f!)\n", header->omega_0, header->omega_lambda);
     exit(1);
   }
+  */ 
 
   Ol = header->omega_lambda;
   Om = header->omega_0;

@@ -17,5 +17,5 @@ double hubble_scaling(double z)
 {
   double z1 = 1.0+z;
   double a = 1.0/z1;
-  return sqrt(Om * (z1*z1*z1) + Ol*pow(a, -3.0*(1.0 + _weff(a))));
+  return sqrt(Om * (z1*z1*z1) + (1-Om-Ol)*(z1*z1) + Ol*pow(a, -3.0*(1.0 + _weff(a)))); // Aseem added +(1-Om-Ol)*(z1*z1) on 06 Nov 2023
 }

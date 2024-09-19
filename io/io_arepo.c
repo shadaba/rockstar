@@ -57,9 +57,10 @@ void arepo_read_dataset(hid_t HDF_FileID, char *filename, char *gid, char *datai
   free(buffer);
 }
 
-float arepo_readheader_float(hid_t HDF_GroupID, char *filename, char *objName)
+float arepo_readheader_float(hid_t HDF_GroupID, char *filename, char *objName, char *gid)
 {
-  char *gid = "Header";
+  // char *gid = "Header";
+  // expect *gid = "Header" or "Parameters"
   hid_t HDF_Type = H5T_NATIVE_FLOAT;
   hid_t HDF_AttrID = check_H5Aopen_name(HDF_GroupID, objName, gid, filename);
   hid_t HDF_DataspaceID = check_H5Aget_space(HDF_AttrID);
@@ -75,9 +76,10 @@ float arepo_readheader_float(hid_t HDF_GroupID, char *filename, char *objName)
 }
 
 
-void arepo_readheader_array(hid_t HDF_GroupID, char *filename, char *objName, hid_t type, void *data)
+void arepo_readheader_array(hid_t HDF_GroupID, char *filename, char *objName, hid_t type, void *data, char *gid)
 {
-  char *gid = "Header";
+  // char *gid = "Header";
+  // expect *gid = "Header" or "Parameters"
   hid_t HDF_AttrID = check_H5Aopen_name(HDF_GroupID, objName, gid, filename);
   hid_t HDF_DataspaceID = check_H5Aget_space(HDF_AttrID);
   check_H5Sselect_all(HDF_DataspaceID);
@@ -110,25 +112,29 @@ void load_particles_arepo(char *filename, struct particle **p, int64_t *num_p)
 {	
   hid_t HDF_FileID = check_H5Fopen(filename, H5F_ACC_RDONLY);
   hid_t HDF_Header = check_H5Gopen(HDF_FileID, "Header", filename);
+  hid_t HDF_Parameters = check_H5Gopen(HDF_FileID, "Parameters", filename);
   
-  Ol = arepo_readheader_float(HDF_Header, filename, "OmegaLambda");
-  Om = arepo_readheader_float(HDF_Header, filename, "Omega0");
-  h0 = arepo_readheader_float(HDF_Header, filename, "HubbleParam");
-  SCALE_NOW = arepo_readheader_float(HDF_Header, filename, "Time");
-  BOX_SIZE = arepo_readheader_float(HDF_Header, filename, "BoxSize");
+  Ol = arepo_readheader_float(HDF_Parameters, filename, "OmegaLambda", "Parameters");
+  Om = arepo_readheader_float(HDF_Parameters, filename, "Omega0", "Parameters");
+  h0 = arepo_readheader_float(HDF_Parameters, filename, "HubbleParam", "Parameters");
+  SCALE_NOW = arepo_readheader_float(HDF_Header, filename, "Time", "Header");
+  BOX_SIZE = arepo_readheader_float(HDF_Parameters, filename, "BoxSize", "Parameters");
   BOX_SIZE *= AREPO_LENGTH_CONVERSION;  
   
   uint32_t npart_low[AREPO_NTYPES], npart_high[AREPO_NTYPES] = {0};
   int64_t npart[AREPO_NTYPES];
   float massTable[AREPO_NTYPES];
   
-  arepo_readheader_array(HDF_Header, filename, "NumPart_ThisFile", H5T_NATIVE_UINT64, npart);
-  arepo_readheader_array(HDF_Header, filename, "NumPart_Total_HighWord", H5T_NATIVE_UINT32, npart_high);
-  arepo_readheader_array(HDF_Header, filename, "NumPart_Total", H5T_NATIVE_UINT32, npart_low);
-  arepo_readheader_array(HDF_Header, filename, "MassTable", H5T_NATIVE_FLOAT, massTable);
+  arepo_readheader_array(HDF_Header, filename, "NumPart_ThisFile", H5T_NATIVE_UINT64, npart, "Header");
+  // below commented by Aseem 06 Nov 2023
+  //arepo_readheader_array(HDF_Header, filename, "NumPart_Total_HighWord", H5T_NATIVE_UINT32, npart_high, "Header");
+  arepo_readheader_array(HDF_Header, filename, "NumPart_Total", H5T_NATIVE_UINT32, npart_low, "Header");
+  arepo_readheader_array(HDF_Header, filename, "MassTable", H5T_NATIVE_FLOAT, massTable, "Header");
   
-  TOTAL_PARTICLES = ( ((int64_t)npart_high[AREPO_DM_PARTTYPE]) << 32 ) 
-    + (int64_t)npart_low[AREPO_DM_PARTTYPE];
+  // below modified by Aseem 06 Nov 2023
+  /*TOTAL_PARTICLES = ( ((int64_t)npart_high[AREPO_DM_PARTTYPE]) << 32 ) 
+    + (int64_t)npart_low[AREPO_DM_PARTTYPE];*/ 
+  TOTAL_PARTICLES = (int64_t)npart_low[AREPO_DM_PARTTYPE];
   
   H5Gclose(HDF_Header);
     

@@ -18,7 +18,11 @@
 #include "io_gadget.h"
 #include "io_generic.h"
 #include "io_internal.h"
-#include "io_tipsy.h"
+
+#ifdef HAVE_TIRPC
+#include "io_tipsy.h"  // wrapped by Aseem 03 Nov 2023
+#endif
+
 #include "meta_io.h"
 #include "../distance.h"
 #include "../version.h"
@@ -119,7 +123,12 @@ void read_particles(char *filename) {
     load_particles_generic(filename, &p, &num_p);
   }
   else if (!strncasecmp(FILE_FORMAT, "TIPSY", 5)) {
+#ifdef HAVE_TIRPC
     load_particles_tipsy(filename, &p, &num_p);
+#else
+    fprintf(stderr, "[Error] TIPSY needs RPC/XDR support.  Recompile Rockstar uncommenting HAVE_TIRPC in Makefile.\n");
+    exit(1);
+#endif
   }
   else if (!strncasecmp(FILE_FORMAT, "AREPO", 5)) {
 #ifdef ENABLE_HDF5

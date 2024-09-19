@@ -1,3 +1,6 @@
+// added by Aseem 03 Nov 2023
+#ifdef HAVE_TIRPC
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
@@ -231,3 +234,4 @@ int tipsy_xdr_star(XDR *pxdrs,struct tipsy_star_particle *ph) {
     return 1;
     }
 
+#endif //HAVE_TIRPC
