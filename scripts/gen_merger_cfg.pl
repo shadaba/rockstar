@@ -106,6 +106,8 @@ print CONFIG << "EOL"
 Om=$Om #Omega_Matter
 Ol=$Ol #Omega_Lambda
 h0=$h0 #h0
+w0=$config->{W0}  /* added by Saee/*
+wa=$config->{WA}  /* added by Saee */
 
 SCALEFILE = "$outbase/outputs/scales.txt"
 INBASE = "$outbase"
