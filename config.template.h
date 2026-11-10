@@ -38,6 +38,10 @@ real(AREPO_LENGTH_CONVERSION, 1e-3);
 integer(AREPO_DM_PARTTYPE, 1);
 #endif /* ENABLE_HDF5 */
 
+#ifdef ENABLE_PKC
+string(PKC_SUBSAMPLES, ""); // pkdgrav3 compressed snapshots: subsamples to read by percent, e.g. "1,3"; "" = all (added for Sahyadri)
+#endif /* ENABLE_PKC */
+
 real(TIPSY_LENGTH_CONVERSION, 1.0);
 real(TIPSY_VELOCITY_CONVERSION, 1.0);
 

@@ -291,6 +291,8 @@ void send_config(int64_t c) {
   snd(h0);
   snd(TRIM_OVERLAP);
   snd(ROUND_AFTER_TRIM);
+  snd(W0); // added for Sahyadri: the PKC reader sets W0/WA from the snapshot header
+  snd(WA);
 #undef snd
 }
 
@@ -306,6 +308,8 @@ void recv_config(int64_t c) {
   rcv(h0);
   rcv(TRIM_OVERLAP);
   rcv(ROUND_AFTER_TRIM);
+  rcv(W0); // added for Sahyadri (see send_config)
+  rcv(WA);
 #undef rcv
  if (strlen(LIGHTCONE_ALT_SNAPS)) {
    for (i=0; i<3; i++)
